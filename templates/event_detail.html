@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ event.title }}</h2>
+<p><strong>Location:</strong> {{ event.location }}</p>
+<p><strong>When:</strong> {{ event.start_time.strftime('%Y-%m-%d %H:%M') }} to {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</p>
+<p><strong>Category:</strong> {{ event.category }}</p>
+<p>{{ event.description }}</p>
+
+{% if event.photos %}
+  {% for img in event.photos.split(',') %}
+    <img src="{{ url_for('static', filename='uploads/' ~ img) }}" style="max-width: 300px; margin: 10px;">
+  {% endfor %}
+{% endif %}
+
+<hr>
+
+{% if rsvps %}
+  <h3>Registered Guests</h3>
+  <ul>
+    {% for r in rsvps %}
+      <li>{{ r.name }} ({{ r.email }}, {{ r.num_guests }} guests)</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <h3>Register Interest</h3>
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    <div>{{ form.name.label }} {{ form.name(size=40) }}</div>
+    <div>{{ form.email.label }} {{ form.email(size=40) }}</div>
+    <div>{{ form.phone.label }} {{ form.phone(size=20) }}</div>
+    <div>{{ form.num_guests.label }} {{ form.num_guests() }}</div>
+    <div><button type="submit">{{ form.submit.label }}</button></div>
+  </form>
+{% endif %}
+{% if current_user.is_authenticated and current_user.id == event.created_by %}
+  <p>
+    <a href="{{ url_for('edit_event', event_id=event.id) }}">Edit</a> |
+    <form action="{{ url_for('delete_event', event_id=event.id) }}" method="POST" style="display:inline;">
+      <button type="submit" onclick="return confirm('Delete this event?')">Delete</button>
+    </form>
+  </p>
+{% endif %}
+
+{% endblock %}

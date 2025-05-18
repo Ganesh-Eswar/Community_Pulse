@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Admin Panel</h2>
+
+<!-- Pending Events Section -->
+<h3>🕒 Pending Events</h3>
+{% if pending_events %}
+  <div class="admin-grid">
+    {% for e, u in pending_events %}
+    <div class="admin-card">
+      <h4>{{ e.title }}</h4>
+      <p><strong>Created by:</strong> {{ u.name }} ({{ u.email }})</p>
+      <p><strong>Category:</strong> {{ e.category }}</p>
+      <p><strong>Date:</strong> {{ e.start_time.strftime('%Y-%m-%d %H:%M') }}</p>
+      <div class="actions">
+        <a class="btn-view" href="{{ url_for('event_detail', event_id=e.id) }}">View</a>
+        <a class="btn-approve" href="{{ url_for('admin_approve_event', event_id=e.id) }}">Approve</a>
+        <a class="btn-reject" href="{{ url_for('admin_reject_event', event_id=e.id) }}">Reject</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No pending events.</p>
+{% endif %}
+
+<!-- Users to Verify Section -->
+<h3>🧑‍💼 Users to Verify as Organizers</h3>
+{% if pending_users %}
+  <div class="admin-grid">
+    {% for u in pending_users %}
+    <div class="admin-card">
+      <p><strong>Name:</strong> {{ u.name }}</p>
+      <p><strong>Email:</strong> {{ u.email }}</p>
+      <a class="btn-verify" href="{{ url_for('admin_verify_user', user_id=u.id) }}">Verify as Organizer</a>
+    </div>
+    {% endfor %}
+  </div>
+{% else %}
+  <p>No users to verify.</p>
+{% endif %}
+
+{% endblock %}

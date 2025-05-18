@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>My Dashboard</h2>
+
+<h3>My Events</h3>
+{% if my_events %}
+  <ul>
+    {% for e in my_events %}
+      <li>
+        {{ e.title }} – 
+        {% if e.approved %}<span style="color:green">Approved</span>
+        {% else %}<span style="color:orange">Pending</span>{% endif %}
+        –
+        <a href="{{ url_for('event_detail', event_id=e.id) }}">View</a>
+        |
+        <a href="{{ url_for('edit_event', event_id=e.id) }}">Edit</a>
+        |
+        <form method="POST" action="{{ url_for('delete_event', event_id=e.id) }}" style="display:inline;">
+          <button type="submit" onclick="return confirm('Delete this event?')">Delete</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven't added any events yet.</p>
+{% endif %}
+
+<h3>My RSVPs</h3>
+{% if my_rsvps %}
+  <ul>
+    {% for r in my_rsvps %}
+      <li>
+        {{ r.event.title }} ({{ r.num_guests }} guests) on {{ r.event.start_time.strftime('%Y-%m-%d') }}
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven't registered for any events yet.</p>
+{% endif %}
+{% endblock %}
