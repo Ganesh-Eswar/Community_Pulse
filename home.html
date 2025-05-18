@@ -16,9 +16,9 @@
       <span class="text-2xl font-semibold text-gray-800">Community Pulse</span>
     </div>
     <div class="flex items-center gap-8">
-      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Home</a>
-      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Register</a>
-      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Login</a>
+      <a href="#" id="nav-home" class="text-gray-700 font-medium hover:text-green-700">Home</a>
+      <a href="#" id="nav-register" class="text-gray-700 font-medium hover:text-green-700">Register</a>
+      <a href="#" id="nav-login" class="text-gray-700 font-medium hover:text-green-700">Login</a>
       <a href="#" class="text-gray-700 font-medium hover:text-green-700">My Events</a>
       <button class="flex items-center gap-2 bg-green-100 px-4 py-2 rounded-md hover:bg-green-200 transition">
         <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
@@ -70,6 +70,15 @@
         `;
         grid.appendChild(card);
       });
+    });
+
+    // Hide Register/Login if user is logged in
+    window.addEventListener('DOMContentLoaded', function() {
+      const role = localStorage.getItem('role');
+      if (role) {
+        document.getElementById('nav-register').style.display = 'none';
+        document.getElementById('nav-login').style.display = 'none';
+      }
     });
   </script>
 </body>
