@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Edit Event</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+
+  <div>{{ form.title.label }}<br>{{ form.title(size=50) }}</div>
+  <div>{{ form.description.label }}<br>{{ form.description(rows=4, cols=50) }}</div>
+  <div>{{ form.category.label }}<br>{{ form.category() }}</div>
+  <div>{{ form.location.label }}<br>{{ form.location(size=50) }}</div>
+  <div>{{ form.lat.label }}<br>{{ form.lat() }}</div>
+  <div>{{ form.lng.label }}<br>{{ form.lng() }}</div>
+  <div>{{ form.start_time.label }}<br>{{ form.start_time() }}</div>
+  <div>{{ form.end_time.label }}<br>{{ form.end_time() }}</div>
+  <p>Note: Updating image will append to existing ones.</p>
+  <div>{{ form.photos.label }}<br>{{ form.photos(multiple=True) }}</div>
+
+  <button type="submit">Save Changes</button>
+</form>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Create New Event</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+
+  <div>
+    {{ form.title.label }}<br>
+    {{ form.title(size=50) }}
+  </div>
+
+  <div>
+    {{ form.description.label }}<br>
+    {{ form.description(rows=4, cols=50) }}
+  </div>
+
+  <div>
+    {{ form.category.label }}<br>
+    {{ form.category() }}
+  </div>
+
+  <div>
+    {{ form.location.label }}<br>
+    {{ form.location(size=50) }}
+  </div>
+
+  <div>
+    {{ form.lat.label }}<br>
+    {{ form.lat() }}
+  </div>
+
+  <div>
+    {{ form.lng.label }}<br>
+    {{ form.lng() }}
+  </div>
+
+  <div>
+    {{ form.start_time.label }}<br>
+    <input type="datetime-local" name="start_time">
+  </div>
+
+  <div>
+    {{ form.end_time.label }}<br>
+    <input type="datetime-local" name="end_time">
+  </div>
+
+  <div>
+    {{ form.photos.label }}<br>
+    <input type="file" name="photos" multiple>
+  </div>
+
+  <button type="submit">Create Event</button>
+</form>
+
+{% if form.errors %}
+  <ul>
+    {% for field, errors in form.errors.items() %}
+      {% for error in errors %}
+        <li><strong>{{ field }}:</strong> {{ error }}</li>
+      {% endfor %}
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endblock %}
