@@ -68,9 +68,9 @@ CREATE TABLE IF NOT EXISTS event_history (
 def create_tables():
     try:
         conn = psycopg2.connect(
-            dbname="your_db_name",
-            user="your_user",
-            password="your_password",
+            dbname="community_pulse",
+            user="postgres",
+            password="1234",
             host="localhost",
             port="5432"
         )
