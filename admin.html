@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Pulse - Admin</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-green-50 min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-sm py-4 px-8 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#A7F3D0"/><path d="M7 12h10M7 16h10M7 8h10" stroke="#34D399" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <span class="text-2xl font-semibold text-gray-800">Community Pulse</span>
+    </div>
+    <div class="flex items-center gap-8">
+      <a href="home.html" class="text-gray-700 font-medium hover:text-green-700">Home</a>
+      <a href="register.html" class="text-gray-700 font-medium hover:text-green-700">Register</a>
+      <a href="login.html" class="text-gray-700 font-medium hover:text-green-700">Login</a>
+      <a href="#" class="text-gray-700 font-medium hover:text-green-700">My Events</a>
+      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Settings</a>
+      <button class="ml-2 flex items-center gap-2 bg-green-100 px-4 py-2 rounded-md hover:bg-green-200 transition">
+        <span class="text-green-700 font-medium">A/frin</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="flex max-w-6xl mx-auto mt-8">
+    <!-- Sidebar -->
+    <aside class="w-56 mr-8">
+      <div class="flex flex-col gap-2">
+        <button id="sidebar-dashboard" class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-100 text-green-700 font-medium focus:outline-none">
+          <svg class="w-5 h-5" fill="none" stroke="#34D399" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          Dashboard
+        </button>
+        <button id="sidebar-events" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 font-medium focus:outline-none">
+          <svg class="w-5 h-5" fill="none" stroke="#6B7280" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>
+          Events
+        </button>
+        <button id="sidebar-users" class="flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-green-50 text-gray-700 font-medium focus:outline-none">
+          <svg class="w-5 h-5" fill="none" stroke="#6B7280" stroke-width="2" viewBox="0 0 24 24"><path d="M16 12a4 4 0 11-8 0 4 4 0 018 0z"/><path d="M12 14v7m0 0H7m5 0h5"/></svg>
+          Users
+        </button>
+      </div>
+    </aside>
+    <!-- Main Content -->
+    <main class="flex-1">
+      <h2 id="admin-title" class="text-2xl font-bold mb-6">Admin</h2>
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <table class="w-full text-left">
+          <thead id="admin-table-head">
+            <!-- Table headers will be injected by JS -->
+          </thead>
+          <tbody id="admin-table-body">
+            <!-- Table rows will be injected by JS -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+  <script>
+    let events = [];
+    let users = [];
+    let currentView = 'dashboard';
+    // Fetch data
+    Promise.all([
+      fetch('events.json').then(r => r.json()),
+      fetch('users.json').then(r => r.json())
+    ]).then(([ev, us]) => {
+      events = ev;
+      users = us;
+      renderDashboard();
+    });
+
+    // Sidebar navigation
+    document.getElementById('sidebar-dashboard').onclick = () => {
+      setActiveSidebar('dashboard');
+      renderDashboard();
+    };
+    document.getElementById('sidebar-events').onclick = () => {
+      setActiveSidebar('events');
+      renderEvents();
+    };
+    document.getElementById('sidebar-users').onclick = () => {
+      setActiveSidebar('users');
+      renderUsers();
+    };
+
+    function setActiveSidebar(view) {
+      currentView = view;
+      document.getElementById('sidebar-dashboard').classList.toggle('bg-green-100', view === 'dashboard');
+      document.getElementById('sidebar-dashboard').classList.toggle('text-green-700', view === 'dashboard');
+      document.getElementById('sidebar-events').classList.toggle('bg-green-100', view === 'events');
+      document.getElementById('sidebar-events').classList.toggle('text-green-700', view === 'events');
+      document.getElementById('sidebar-users').classList.toggle('bg-green-100', view === 'users');
+      document.getElementById('sidebar-users').classList.toggle('text-green-700', view === 'users');
+    }
+
+    function renderDashboard() {
+      document.getElementById('admin-title').textContent = 'Admin - Dashboard';
+      document.getElementById('admin-table-head').innerHTML = `
+        <tr class="border-b">
+          <th class="py-2">Event</th>
+          <th class="py-2">Date</th>
+          <th class="py-2">Submissions</th>
+          <th class="py-2">Status</th>
+          <th class="py-2">Action</th>
+        </tr>
+      `;
+      const tbody = document.getElementById('admin-table-body');
+      tbody.innerHTML = '';
+      const pendingEvents = events.filter(e => !e.approved);
+      if (pendingEvents.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-12 text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No events" class="mx-auto mb-4 w-24 h-24 opacity-60">
+              <div class="text-lg text-gray-500 font-medium">No events pending approval</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      pendingEvents.forEach(event => {
+        const start = new Date(event.start_time);
+        const dateStr = start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const submissions = Math.floor(Math.random() * 5) + 1;
+        tbody.innerHTML += `
+          <tr class="border-b">
+            <td class="py-3">
+              <div class="font-medium">${event.title}</div>
+              <div class="text-xs text-gray-500">${start.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</div>
+            </td>
+            <td class="py-3">${dateStr}</td>
+            <td class="py-3">${submissions}</td>
+            <td class="py-3">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-yellow-50 text-yellow-700">Pending</span>
+            </td>
+            <td class="py-3">
+              <button class="approve-btn bg-green-100 text-green-700 px-3 py-1 rounded mr-2" data-id="${event.id}">Approve</button>
+              <button class="reject-btn bg-red-100 text-red-700 px-3 py-1 rounded" data-id="${event.id}">Reject</button>
+            </td>
+          </tr>
+        `;
+      });
+      // Add event listeners for approve/reject
+      document.querySelectorAll('.approve-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.getAttribute('data-id');
+          events = events.map(e => e.id === id ? { ...e, approved: true } : e);
+          renderDashboard();
+        };
+      });
+      document.querySelectorAll('.reject-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.getAttribute('data-id');
+          events = events.filter(e => e.id !== id);
+          renderDashboard();
+        };
+      });
+    }
+
+    function renderEvents() {
+      document.getElementById('admin-title').textContent = 'Admin - Events';
+      document.getElementById('admin-table-head').innerHTML = `
+        <tr class="border-b">
+          <th class="py-2">Event</th>
+          <th class="py-2">Date</th>
+          <th class="py-2">Submissions</th>
+          <th class="py-2">Status</th>
+        </tr>
+      `;
+      const tbody = document.getElementById('admin-table-body');
+      tbody.innerHTML = '';
+      const completedEvents = events.filter(e => e.approved && new Date(e.end_time) < new Date());
+      if (completedEvents.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="py-12 text-center">
+              <img src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png" alt="No events" class="mx-auto mb-4 w-24 h-24 opacity-60">
+              <div class="text-lg text-gray-500 font-medium">No completed events found</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      completedEvents.forEach(event => {
+        const start = new Date(event.start_time);
+        const dateStr = start.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const submissions = Math.floor(Math.random() * 5) + 1;
+        tbody.innerHTML += `
+          <tr class="border-b">
+            <td class="py-3">
+              <div class="font-medium">${event.title}</div>
+              <div class="text-xs text-gray-500">${start.toLocaleDateString(undefined, { month: 'long', day: 'numeric' })}</div>
+            </td>
+            <td class="py-3">${dateStr}</td>
+            <td class="py-3">${submissions}</td>
+            <td class="py-3">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-green-50 text-green-700">Approved</span>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    function renderUsers() {
+      document.getElementById('admin-title').textContent = 'Admin - Users';
+      document.getElementById('admin-table-head').innerHTML = `
+        <tr class="border-b">
+          <th class="py-2">Name</th>
+          <th class="py-2">Email</th>
+          <th class="py-2">Role</th>
+          <th class="py-2">Status</th>
+          <th class="py-2">Action</th>
+        </tr>
+      `;
+      const tbody = document.getElementById('admin-table-body');
+      tbody.innerHTML = '';
+      users.forEach(user => {
+        tbody.innerHTML += `
+          <tr class="border-b">
+            <td class="py-3">${user.name}</td>
+            <td class="py-3">${user.email}</td>
+            <td class="py-3">${user.role}</td>
+            <td class="py-3">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${user.status === 'active' ? 'bg-green-50 text-green-700' : 'bg-yellow-50 text-yellow-700'}">${user.status.charAt(0).toUpperCase() + user.status.slice(1)}</span>
+            </td>
+            <td class="py-3">
+              <button class="verify-btn bg-green-100 text-green-700 px-3 py-1 rounded mr-2" data-id="${user.id}">Verify</button>
+              <button class="ban-btn bg-red-100 text-red-700 px-3 py-1 rounded" data-id="${user.id}">Ban</button>
+            </td>
+          </tr>
+        `;
+      });
+      // Add event listeners for verify/ban
+      document.querySelectorAll('.verify-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.getAttribute('data-id');
+          users = users.map(u => u.id === id ? { ...u, status: 'active' } : u);
+          renderUsers();
+        };
+      });
+      document.querySelectorAll('.ban-btn').forEach(btn => {
+        btn.onclick = () => {
+          const id = btn.getAttribute('data-id');
+          users = users.map(u => u.id === id ? { ...u, status: 'banned' } : u);
+          renderUsers();
+        };
+      });
+    }
+  </script>
+</body>
+</html>

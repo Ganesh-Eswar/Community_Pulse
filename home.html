@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Pulse - Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-green-50 min-h-screen">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-sm py-4 px-8 flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <div class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#A7F3D0"/><path d="M7 12h10M7 16h10M7 8h10" stroke="#34D399" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <span class="text-2xl font-semibold text-gray-800">Community Pulse</span>
+    </div>
+    <div class="flex items-center gap-8">
+      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Home</a>
+      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Register</a>
+      <a href="#" class="text-gray-700 font-medium hover:text-green-700">Login</a>
+      <a href="#" class="text-gray-700 font-medium hover:text-green-700">My Events</a>
+      <button class="flex items-center gap-2 bg-green-100 px-4 py-2 rounded-md hover:bg-green-200 transition">
+        <svg class="w-5 h-5 text-green-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+        <span class="text-green-700 font-medium">Search</span>
+      </button>
+      <div class="ml-2">
+        <svg class="w-7 h-7 text-green-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="#34D399" stroke-width="2"/><path d="M12 8v4l3 3" stroke="#34D399" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Search Bar -->
+  <div class="max-w-6xl mx-auto mt-8">
+    <div class="bg-green-100 rounded-md flex items-center px-4 py-3 mb-8">
+      <svg class="w-5 h-5 text-green-700 mr-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Search" class="bg-green-100 outline-none w-full text-green-900 placeholder-green-700" />
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+      <!-- Event cards will be injected by JavaScript -->
+    </div>
+  </div>
+  <script>
+  fetch('events.json')
+    .then(res => res.json())
+    .then(events => {
+      const grid = document.querySelector('.grid');
+      grid.innerHTML = '';
+      events.filter(e => e.approved && e.status === 'active').forEach(event => {
+        const img = event.photos && event.photos.length ? event.photos[0] : 'https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=400&q=80';
+        const date = new Date(event.start_time);
+        const dateStr = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl shadow-md overflow-hidden cursor-pointer hover:shadow-lg transition';
+        card.onclick = () => window.location.href = `event.html?id=${event.id}`;
+        card.innerHTML = `
+          <img src="${img}" alt="${event.title}" class="w-full h-40 object-cover">
+          <div class="p-4">
+            <h3 class="text-lg font-semibold mb-1">${event.title}</h3>
+            <p class="text-sm text-gray-500">${dateStr}</p>
+            <div class="flex items-center gap-2 mt-2">
+              <span class="bg-green-50 text-green-700 px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                <svg class='w-4 h-4' fill='none' stroke='#34D399' stroke-width='2' viewBox='0 0 24 24'><circle cx='12' cy='12' r='10'/></svg>
+                ${event.category}
+              </span>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>
