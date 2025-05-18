@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Create New Event</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+
+  <div>{{ form.title.label }}<br>{{ form.title(size=50) }}</div>
+  <div>{{ form.description.label }}<br>{{ form.description(rows=4, cols=50) }}</div>
+  <div>{{ form.location.label }}<br>{{ form.location(size=50) }}</div>
+  <div>{{ form.category.label }}<br>{{ form.category() }}</div>
+  <div>{{ form.start_time.label }}<br>{{ form.start_time() }}</div>
+  <div>{{ form.end_time.label }}<br>{{ form.end_time() }}</div>
+  <div>{{ form.photo.label }}<br>{{ form.photo() }}</div>  <!-- ✅ New field -->
+
+  <div><button type="submit">{{ form.submit.label }}</button></div>
+</form>
+{% endblock %}

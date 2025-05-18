@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>My Dashboard</h2>
+
+<h3>Events I Created</h3>
+{% if my_events %}
+  <ul>
+    {% for e in my_events %}
+      <li><strong>{{ e.title }}</strong> — {{ e.start_time.strftime('%Y-%m-%d %H:%M') }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven't created any events yet.</p>
+{% endif %}
+
+<h3>Events I Registered For</h3>
+{% if registered_events %}
+  <ul>
+    {% for e in registered_events %}
+      <li><strong>{{ e.title }}</strong> — {{ e.start_time.strftime('%Y-%m-%d %H:%M') }}</li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven't registered for any events yet.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ event.title }}</h2>
+
+<p><strong>Location:</strong> {{ event.location }}</p>
+<p><strong>Category:</strong> {{ event.category }}</p>
+<p><strong>Starts:</strong> {{ event.start_time.strftime('%Y-%m-%d %H:%M') }}</p>
+<p><strong>Ends:</strong> {{ event.end_time.strftime('%Y-%m-%d %H:%M') }}</p>
+<p>{{ event.description }}</p>
+
+<hr>
+<h3>Register Interest</h3>
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+  <div>{{ form.name.label }} {{ form.name(size=40) }}</div>
+  <div>{{ form.email.label }} {{ form.email(size=40) }}</div>
+  <div>{{ form.phone.label }} {{ form.phone(size=20) }}</div>
+  <div>{{ form.num_people.label }} {{ form.num_people() }}</div>
+  <div><button type="submit">{{ form.submit.label }}</button></div>
+</form>
+{% endblock %}
